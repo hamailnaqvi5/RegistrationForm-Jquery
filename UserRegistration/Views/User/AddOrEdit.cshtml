@@ -1,0 +1,189 @@
+﻿@model UserRegistration.Models.db_user
+
+@{
+    ViewBag.Title = "AddOrEdit";
+}
+<h2>Registration</h2>
+@using (Html.BeginForm())
+{
+    @*@Html.AntiForgeryToken()*@
+    <div class="form-horizontal">
+        <hr />
+        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+        <div class="form-group">
+            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", @id = "username", @placeholder = "User Name" } })
+                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @id = "password", @placeholder = "Password", @type = "Password" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @id = "email", @placeholder = "Email" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @id = "phone", @placeholder = "Phone Number" } })
+                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsAdmin, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsAdmin)
+                    @Html.ValidationMessageFor(model => model.IsAdmin, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Register" class="btn btn-default" id="submit" />
+            </div>
+        </div>
+    </div>
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<link href="~/css/Style.css" rel="stylesheet" />
+<script type="text/javascript">
+
+  
+
+
+    //Spacebar disable
+    $('#username').keydown(function (event) {
+        if (event.keyCode == '32') {
+            event.preventDefault();
+        }
+    });
+    $('password').keydown(function (event) {
+        if (event.keyCode == '32') {
+            event.preventDefault();
+        }
+    });
+    $('#email').keydown(function (event) {
+        if (event.keyCode == '32') {
+            event.preventDefault();
+        }
+    });
+    $('#phone').keydown(function (event) {
+        if (event.keyCode == '32') {
+            event.preventDefault();
+        }
+    });
+    // disable single character a disable hua wa hai
+    $("#username").keypress(function (evt) {
+        var keycode = evt.charCode || evt.keyCode;
+        if (keycode == 97)      //keycode har chr ka diff hota
+        {
+            return false;
+        }
+        //$("#password").keypress(function (evt) {
+
+        //    var keycode = evt.charCode || evt.keyCode;
+        //    if (keycode == 97)      //keycode har chr ka diff hota
+        //    {
+        //        return false;
+        //    }
+    });
+    //disable copy paste bind function es sa copy paste nae hoga
+    $(document).ready(function () {
+        $('#username').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    });
+    $(document).ready(function () {
+        $('#password').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    });
+    $(document).ready(function () {
+        $('#email').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    });
+    $(document).ready(function () {
+        $('#phone').bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+    });
+    // alert on fields jab field empty hogi to alert show hoga
+    $("[id$=submit]").on("click", function () {
+        var valid = 0;
+        if ($("[id$=username]").val() == "") {
+            alert("Enter Name.");
+            $("[id$=username]").focus();
+            valid = 1;
+            return;
+        }
+        if ($("[id$=password]").val() == "") {
+            alert("Enter Password.");
+            $("[id$=password]").focus();
+            valid = 1;
+            return;
+        }
+        if ($("[id$=email]").val() == "") {
+            alert("Enter Email.");
+            $("[id$=email]").focus();
+            valid = 1;
+            return;
+        }
+        if ($("[id$=phone]").val() == "") {
+            alert("Enter Phone.");
+            $("[id$=phone]").focus();
+            valid = 1;
+            return;
+        }
+        if ($("submit").click(
+            function () {
+                alert("Data stored");
+                valid = 1;
+                return;
+            }));
+        if (valid == 0) {
+            $a.ajax({
+                type: "POST",
+                url: "/Register/insertData",
+                data: "{username':'" + $("[id$=username]").val() +
+                    "','password':'" + $("[id$=password]").val() +
+                    "','email':'" + $("[id$=email]").val() +
+                    "','phone':'" + $("[id$=phone]").val() +
+                    "'}",
+                contentType: "application/json;charset-utf-8",
+                dataType: "json",
+                sucess: function (response) {
+                    alert(response[0].toString());
+                    $("[id$=username]").val("");
+                    $("[id$=password]").val("");
+                    $("[id$=email]").val("");
+                    $("[id$=phone]").val("");
+                },
+                //   var email="waqas@gmail.com"
+                error: function (response) {
+                    alert(reponse.toString());
+                }
+            })
+        }
+    });
+</script>
+@*<div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
